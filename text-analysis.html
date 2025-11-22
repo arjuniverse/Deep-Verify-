@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Analysis - DeepVerify | AI Fake News Detection System</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation will be injected here by navigation.js -->
+    
+    <div class="page-header">
+        <div class="container">
+            <h1>Text Analysis</h1>
+            <p>Paste or type the news article or text content you want to analyze for authenticity.</p>
+        </div>
+    </div>
+
+    <div class="analysis-container">
+        <div class="analysis-box">
+            <h2>Enter Text Content</h2>
+            
+            <form id="textAnalysisForm">
+                <div class="form-group">
+                    <label for="textInput">News Article Text</label>
+                    <textarea 
+                        id="textInput" 
+                        name="textInput" 
+                        placeholder="Paste or type the news article, social media post, or any text content here...&#10;&#10;Example: 'Scientists have discovered a revolutionary new treatment that cures cancer in 24 hours...'"
+                        required
+                    ></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="analyzeBtn">
+                    Analyze Text
+                </button>
+            </form>
+
+            <div class="loading" id="loadingSection">
+                <div class="spinner"></div>
+                <p>Analyzing text content...</p>
+            </div>
+
+            <div class="results-section" id="resultsSection">
+                <div class="result-header">
+                    <h2 style="margin: 0;">Analysis Result</h2>
+                    <span class="result-badge" id="resultBadge">Real</span>
+                </div>
+                
+                <div class="result-details">
+                    <h3>Confidence Score</h3>
+                    <p id="confidenceScore">92.5%</p>
+                    
+                    <h3>Analysis Details</h3>
+                    <p id="analysisDetails">
+                        The text content has been analyzed using advanced NLP models and credibility indicators. 
+                        Based on linguistic patterns, semantic consistency, and source verification, 
+                        this content appears to be authentic.
+                    </p>
+                    
+                    <h3>Key Indicators</h3>
+                    <ul id="keyIndicators" style="color: var(--gray-700); line-height: 1.8;">
+                        <li>Consistent factual claims</li>
+                        <li>Credible source references</li>
+                        <li>Neutral language usage</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/navigation.js"></script>
+    <script>
+        // Handle text analysis form submission
+        document.getElementById('textAnalysisForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const textInput = document.getElementById('textInput').value.trim();
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loadingSection = document.getElementById('loadingSection');
+            const resultsSection = document.getElementById('resultsSection');
+            
+            if (!textInput) {
+                alert('Please enter some text to analyze.');
+                return;
+            }
+            
+            // Show loading, hide results
+            loadingSection.classList.add('show');
+            resultsSection.classList.remove('show');
+            analyzeBtn.disabled = true;
+            
+            // TODO: Replace with actual backend API call
+            // Simulate API call delay
+            setTimeout(() => {
+                // Example API call structure:
+                /*
+                fetch('/api/analyze/text', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('deepverify_token')
+                    },
+                    body: JSON.stringify({
+                        text: textInput
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    displayResults(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Analysis failed. Please try again.');
+                })
+                .finally(() => {
+                    loadingSection.classList.remove('show');
+                    analyzeBtn.disabled = false;
+                });
+                */
+                
+                // Demo result (remove when backend is connected)
+                const demoResult = {
+                    prediction: Math.random() > 0.5 ? 'Real' : 'Fake',
+                    confidence: (Math.random() * 30 + 70).toFixed(1),
+                    details: 'This is a demo result. Connect to your backend API to get real analysis.',
+                    indicators: [
+                        'Text structure analysis completed',
+                        'Linguistic pattern matching performed',
+                        'Credibility markers evaluated'
+                    ]
+                };
+                
+                displayResults(demoResult);
+                loadingSection.classList.remove('show');
+                analyzeBtn.disabled = false;
+            }, 1500);
+        });
+        
+        function displayResults(data) {
+            const resultsSection = document.getElementById('resultsSection');
+            const resultBadge = document.getElementById('resultBadge');
+            const confidenceScore = document.getElementById('confidenceScore');
+            const analysisDetails = document.getElementById('analysisDetails');
+            const keyIndicators = document.getElementById('keyIndicators');
+            
+            // Update badge
+            resultBadge.textContent = data.prediction;
+            resultBadge.className = 'result-badge ' + data.prediction.toLowerCase();
+            
+            // Update confidence
+            confidenceScore.textContent = data.confidence + '%';
+            
+            // Update details
+            analysisDetails.textContent = data.details || 'Analysis completed.';
+            
+            // Update indicators
+            if (data.indicators && Array.isArray(data.indicators)) {
+                keyIndicators.innerHTML = data.indicators.map(ind => `<li>${ind}</li>`).join('');
+            }
+            
+            // Show results
+            resultsSection.classList.add('show');
+            
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>
+
+

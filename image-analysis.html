@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Analysis - DeepVerify | AI Fake News Detection System</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation will be injected here by navigation.js -->
+    
+    <div class="page-header">
+        <div class="container">
+            <h1>Image Analysis</h1>
+            <p>Upload an image to check for manipulation, deepfakes, or verify its authenticity.</p>
+        </div>
+    </div>
+
+    <div class="analysis-container">
+        <div class="analysis-box">
+            <h2>Upload Image</h2>
+            
+            <form id="imageAnalysisForm">
+                <div class="file-upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                    <div class="file-upload-icon">📸</div>
+                    <div class="file-upload-text">
+                        <strong>Click to upload</strong> or drag and drop
+                    </div>
+                    <div class="file-upload-hint">
+                        PNG, JPG, JPEG up to 10MB
+                    </div>
+                    <input 
+                        type="file" 
+                        id="fileInput" 
+                        name="imageFile" 
+                        accept="image/png,image/jpeg,image/jpg"
+                        required
+                    >
+                </div>
+                
+                <div id="imagePreview" style="display: none; margin-bottom: 1.5rem;">
+                    <img id="previewImg" src="" alt="Preview" style="max-width: 100%; border-radius: 8px; box-shadow: var(--shadow);">
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="analyzeBtn">
+                    Analyze Image
+                </button>
+            </form>
+
+            <div class="loading" id="loadingSection">
+                <div class="spinner"></div>
+                <p>Analyzing image content...</p>
+            </div>
+
+            <div class="results-section" id="resultsSection">
+                <div class="result-header">
+                    <h2 style="margin: 0;">Analysis Result</h2>
+                    <span class="result-badge" id="resultBadge">Authentic</span>
+                </div>
+                
+                <div class="result-details">
+                    <h3>Confidence Score</h3>
+                    <p id="confidenceScore">88.3%</p>
+                    
+                    <h3>Analysis Details</h3>
+                    <p id="analysisDetails">
+                        The image has been analyzed using advanced computer vision and deep learning models. 
+                        Based on pixel-level analysis, compression artifacts, and metadata examination, 
+                        this image appears to be authentic with no signs of manipulation.
+                    </p>
+                    
+                    <h3>Key Indicators</h3>
+                    <ul id="keyIndicators" style="color: var(--gray-700); line-height: 1.8;">
+                        <li>No signs of digital manipulation detected</li>
+                        <li>Consistent lighting and shadows</li>
+                        <li>Normal compression patterns</li>
+                    </ul>
+                    
+                    <h3>Technical Analysis</h3>
+                    <p id="technicalAnalysis" style="color: var(--gray-700); line-height: 1.8;">
+                        Deepfake detection algorithms found no evidence of AI-generated content. 
+                        Image metadata appears consistent with camera-generated photos.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/navigation.js"></script>
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        
+        // Handle file selection
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file type
+                if (!file.type.match('image.*')) {
+                    alert('Please select a valid image file.');
+                    return;
+                }
+                
+                // Validate file size (10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('Image size should be less than 10MB.');
+                    return;
+                }
+                
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    uploadArea.style.borderColor = 'var(--primary-blue)';
+                    uploadArea.querySelector('.file-upload-text').innerHTML = '<strong>File selected:</strong> ' + file.name;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+        
+        // Handle form submission
+        document.getElementById('imageAnalysisForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('fileInput');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loadingSection = document.getElementById('loadingSection');
+            const resultsSection = document.getElementById('resultsSection');
+            
+            if (!fileInput.files || !fileInput.files[0]) {
+                alert('Please select an image file.');
+                return;
+            }
+            
+            // Show loading, hide results
+            loadingSection.classList.add('show');
+            resultsSection.classList.remove('show');
+            analyzeBtn.disabled = true;
+            
+            // TODO: Replace with actual backend API call
+            // Simulate API call delay
+            setTimeout(() => {
+                // Example API call structure:
+                /*
+                const formData = new FormData();
+                formData.append('image', fileInput.files[0]);
+                
+                fetch('/api/analyze/image', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('deepverify_token')
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    displayResults(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Analysis failed. Please try again.');
+                })
+                .finally(() => {
+                    loadingSection.classList.remove('show');
+                    analyzeBtn.disabled = false;
+                });
+                */
+                
+                // Demo result (remove when backend is connected)
+                const demoResult = {
+                    prediction: Math.random() > 0.5 ? 'Authentic' : 'Manipulated',
+                    confidence: (Math.random() * 25 + 75).toFixed(1),
+                    details: 'Future Advancements : More information about the news.',
+                    indicators: [
+                        'Pixel-level analysis completed',
+                        'Deepfake detection performed',
+                        'Metadata verification done'
+                    ],
+                    technical: 'Image analysis algorithms examined compression patterns, lighting consistency, and potential manipulation artifacts.'
+                };
+                
+                displayResults(demoResult);
+                loadingSection.classList.remove('show');
+                analyzeBtn.disabled = false;
+            }, 2000);
+        });
+        
+        function displayResults(data) {
+            const resultsSection = document.getElementById('resultsSection');
+            const resultBadge = document.getElementById('resultBadge');
+            const confidenceScore = document.getElementById('confidenceScore');
+            const analysisDetails = document.getElementById('analysisDetails');
+            const keyIndicators = document.getElementById('keyIndicators');
+            const technicalAnalysis = document.getElementById('technicalAnalysis');
+            
+            // Update badge
+            resultBadge.textContent = data.prediction;
+            resultBadge.className = 'result-badge ' + (data.prediction.toLowerCase() === 'authentic' ? 'real' : 'fake');
+            
+            // Update confidence
+            confidenceScore.textContent = data.confidence + '%';
+            
+            // Update details
+            analysisDetails.textContent = data.details || 'Analysis completed.';
+            
+            // Update indicators
+            if (data.indicators && Array.isArray(data.indicators)) {
+                keyIndicators.innerHTML = data.indicators.map(ind => `<li>${ind}</li>`).join('');
+            }
+            
+            // Update technical analysis
+            if (data.technical) {
+                technicalAnalysis.textContent = data.technical;
+            }
+            
+            // Show results
+            resultsSection.classList.add('show');
+            
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>
+
+

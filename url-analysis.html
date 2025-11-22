@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Analysis - DeepVerify | AI Fake News Detection System</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation will be injected here by navigation.js -->
+    
+    <div class="page-header">
+        <div class="container">
+            <h1>URL Analysis</h1>
+            <p>Enter a URL to verify website credibility and analyze article content for authenticity.</p>
+        </div>
+    </div>
+
+    <div class="analysis-container">
+        <div class="analysis-box">
+            <h2>Enter URL</h2>
+            
+            <form id="urlAnalysisForm">
+                <div class="url-input-group">
+                    <input 
+                        type="url" 
+                        id="urlInput" 
+                        name="urlInput" 
+                        placeholder="https://example.com/news-article" 
+                        required
+                        pattern="https?://.+"
+                    >
+                    <button type="submit" class="btn btn-primary" id="analyzeBtn">
+                        Analyze URL
+                    </button>
+                </div>
+            </form>
+
+            <div class="loading" id="loadingSection">
+                <div class="spinner"></div>
+                <p>Analyzing URL and content...</p>
+            </div>
+
+            <div class="results-section" id="resultsSection">
+                <div class="result-header">
+                    <h2 style="margin: 0;">Analysis Result</h2>
+                    <span class="result-badge" id="resultBadge">Credible</span>
+                </div>
+                
+                <div class="result-details">
+                    <h3>Website Credibility</h3>
+                    <p id="credibilityScore">85.2%</p>
+                    
+                    <h3>Domain Information</h3>
+                    <div id="domainInfo" style="color: var(--gray-700); line-height: 1.8; margin-bottom: 1rem;">
+                        <p><strong>Domain:</strong> <span id="domainName">example.com</span></p>
+                        <p><strong>Domain Age:</strong> <span id="domainAge">Not available</span></p>
+                        <p><strong>SSL Certificate:</strong> <span id="sslStatus">Valid</span></p>
+                    </div>
+                    
+                    <h3>Content Analysis</h3>
+                    <p id="contentAnalysis">
+                        The article content has been analyzed for authenticity markers, source credibility, 
+                        and factual consistency. Based on cross-referencing with known fact-checking databases 
+                        and content analysis, this source appears to be credible.
+                    </p>
+                    
+                    <h3>Key Indicators</h3>
+                    <ul id="keyIndicators" style="color: var(--gray-700); line-height: 1.8;">
+                        <li>Domain reputation check completed</li>
+                        <li>Content fact-checking performed</li>
+                        <li>Source verification done</li>
+                    </ul>
+                    
+                    <h3>Risk Assessment</h3>
+                    <p id="riskAssessment" style="color: var(--gray-700); line-height: 1.8;">
+                        Low risk indicators detected. The website appears to follow standard journalistic practices 
+                        and has not been flagged in known misinformation databases.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/navigation.js"></script>
+    <script>
+        // Handle URL analysis form submission
+        document.getElementById('urlAnalysisForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const urlInput = document.getElementById('urlInput').value.trim();
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loadingSection = document.getElementById('loadingSection');
+            const resultsSection = document.getElementById('resultsSection');
+            
+            if (!urlInput) {
+                alert('Please enter a URL to analyze.');
+                return;
+            }
+            
+            // Validate URL format
+            try {
+                new URL(urlInput);
+            } catch (e) {
+                alert('Please enter a valid URL (must start with http:// or https://)');
+                return;
+            }
+            
+            // Show loading, hide results
+            loadingSection.classList.add('show');
+            resultsSection.classList.remove('show');
+            analyzeBtn.disabled = true;
+            
+            // TODO: Replace with actual backend API call
+            // Simulate API call delay
+            setTimeout(() => {
+                // Example API call structure:
+                /*
+                fetch('/api/analyze/url', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('deepverify_token')
+                    },
+                    body: JSON.stringify({
+                        url: urlInput
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    displayResults(data, urlInput);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Analysis failed. Please try again.');
+                })
+                .finally(() => {
+                    loadingSection.classList.remove('show');
+                    analyzeBtn.disabled = false;
+                });
+                */
+                
+                // Demo result (remove when backend is connected)
+                const url = new URL(urlInput);
+                const demoResult = {
+                    prediction: Math.random() > 0.5 ? 'Credible' : 'Suspicious',
+                    credibility: (Math.random() * 25 + 75).toFixed(1),
+                    domain: url.hostname,
+                    domainAge: 'Not available',
+                    sslStatus: 'Valid',
+                    contentAnalysis: 'This is a demo result. Connect to your backend API to get real URL analysis.',
+                    indicators: [
+                        'Domain reputation checked',
+                        'Content credibility analyzed',
+                        'Source verification completed'
+                    ],
+                    riskAssessment: 'Analysis algorithms evaluated the URL against known databases and credibility markers.'
+                };
+                
+                displayResults(demoResult);
+                loadingSection.classList.remove('show');
+                analyzeBtn.disabled = false;
+            }, 2000);
+        });
+        
+        function displayResults(data, urlInput) {
+            const resultsSection = document.getElementById('resultsSection');
+            const resultBadge = document.getElementById('resultBadge');
+            const credibilityScore = document.getElementById('credibilityScore');
+            const domainName = document.getElementById('domainName');
+            const domainAge = document.getElementById('domainAge');
+            const sslStatus = document.getElementById('sslStatus');
+            const contentAnalysis = document.getElementById('contentAnalysis');
+            const keyIndicators = document.getElementById('keyIndicators');
+            const riskAssessment = document.getElementById('riskAssessment');
+            
+            // Update badge
+            resultBadge.textContent = data.prediction;
+            resultBadge.className = 'result-badge ' + (data.prediction.toLowerCase() === 'credible' ? 'real' : 'fake');
+            
+            // Update credibility
+            credibilityScore.textContent = data.credibility + '%';
+            
+            // Update domain info
+            domainName.textContent = data.domain || 'N/A';
+            domainAge.textContent = data.domainAge || 'Not available';
+            sslStatus.textContent = data.sslStatus || 'Unknown';
+            
+            // Update content analysis
+            contentAnalysis.textContent = data.contentAnalysis || 'Analysis completed.';
+            
+            // Update indicators
+            if (data.indicators && Array.isArray(data.indicators)) {
+                keyIndicators.innerHTML = data.indicators.map(ind => `<li>${ind}</li>`).join('');
+            }
+            
+            // Update risk assessment
+            if (data.riskAssessment) {
+                riskAssessment.textContent = data.riskAssessment;
+            }
+            
+            // Show results
+            resultsSection.classList.add('show');
+            
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>
+
+
