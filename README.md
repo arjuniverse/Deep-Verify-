@@ -1,35 +1,3 @@
-# DeepVerify - AI Fake News Detection System
-
-A modern, responsive web application for detecting fake news using artificial intelligence. DeepVerify provides a secure, user-friendly interface for analyzing text, images, and URLs to verify their authenticity.
-
-## Features
-
-- **Secure Login Gateway**: Protected access with authentication system
-- **Text Analysis**: Analyze news articles and text content for authenticity
-- **Image Analysis**: Detect manipulated images, deepfakes, and verify photo authenticity
-- **URL Analysis**: Verify website credibility and check article URLs
-- **Real-Time Results**: Fast processing with instant analysis results
-- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
-- **Modern UI**: Clean blue-white theme with professional layout
-
-## Project Structure
-
-```
-DeepVerify/
-├── index.html              # Login page (entry point)
-├── home.html               # Home page with analysis options
-├── text-analysis.html      # Text analysis page
-├── image-analysis.html     # Image analysis page
-├── url-analysis.html       # URL analysis page
-├── about.html              # About page
-├── css/
-│   └── styles.css         # Main stylesheet
-├── js/
-│   ├── auth.js            # Authentication management
-│   └── navigation.js      # Navigation bar rendering
-├── assets/                # Images, logos, and other assets
-└── README.md              # This file
-```
 
 ## Getting Started
 
