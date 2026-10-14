@@ -1,12 +1,4 @@
-# 🔍 DeepVerify - AI Fake News Detection System
 
-**DeepVerify** is a modern, responsive web application for detecting and verifying potentially fake news using Artificial Intelligence. It provides a secure, user-friendly interface for analyzing **text, images, and URLs** to help users evaluate the authenticity and credibility of online information.
-
----
-
-## 👤 Use Case Diagram
-
-The use case diagram illustrates how users interact with DeepVerify to authenticate themselves and analyze different types of content.
 
 ```mermaid
 flowchart LR
